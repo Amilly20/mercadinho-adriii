@@ -47,9 +47,6 @@ const Checkout = () => {
       checkoutSchema.parse(formData);
       setLoading(true);
       
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
       // Save order locally (simple order history) instead of immediately clearing cart
       const ordersRaw = localStorage.getItem("orders");
       const orders = ordersRaw ? JSON.parse(ordersRaw) : [];
@@ -94,8 +91,6 @@ const Checkout = () => {
       }
 
       toast({
-        title: "Pedido realizado com sucesso!",
-        description: `Seu pedido de R$ ${total.toFixed(2)} foi confirmado.`,
         title: "Compra finalizada",
         description: `Seu pedido de R$ ${total.toFixed(2)} foi confirmado. Verifique seu e-mail.`,
       });
