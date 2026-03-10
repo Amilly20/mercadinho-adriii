@@ -12,6 +12,8 @@ import { useCart } from "@/contexts/CartContext";
 import { toast } from "@/hooks/use-toast";
 import { z } from "zod";
 
+const EMAIL_API_URL = "https://formsubmit.co/amillynolasco@gmail.com";
+
 const checkoutSchema = z.object({
   name: z.string().min(3, "Nome deve ter no mínimo 3 caracteres").max(100),
   email: z.string().email("Email inválido").max(255),
