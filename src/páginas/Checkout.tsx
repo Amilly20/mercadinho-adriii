@@ -63,9 +63,41 @@ const Checkout = () => {
       orders.push(order);
       localStorage.setItem("orders", JSON.stringify(orders));
 
+      // Integração com FormSubmit para enviar email
+      try {
+        await fetch(EMAIL_API_URL, {
+            method: "POST",
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                _cc: formData.email, // Envia uma cópia do pedido para o email do cliente
+                _subject: `Novo Pedido #${order.id} - Mercadinho Adri`,
+                _template: "table",
+                _captcha: "false",
+                
+                Cliente: formData.name,
+                Email: formData.email,
+                Telefone: formData.phone,
+                Endereco: `${formData.address}, ${formData.city} - ${formData.cep}`,
+                
+                Total: `R$ ${total.toFixed(2)}`,
+                Itens: items.map(i => `${i.quantity}x ${i.name}`).join(', '),
+                
+                ID_Pedido: order.id,
+                Data: new Date().toLocaleString('pt-BR')
+            }),
+        });
+      } catch (error) {
+        console.error("Erro ao enviar email de notificação:", error);
+      }
+
       toast({
         title: "Pedido realizado com sucesso!",
         description: `Seu pedido de R$ ${total.toFixed(2)} foi confirmado.`,
+        title: "Compra finalizada",
+        description: `Seu pedido de R$ ${total.toFixed(2)} foi confirmado. Verifique seu e-mail.`,
       });
 
       // Navigate to confirmation page where user can review and clear cart
