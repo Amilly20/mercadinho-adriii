@@ -12,14 +12,18 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Profile from "./pages/Profile";
 import Favorites from "./pages/Favorites";
-import OrderConfirmation from "./pages/OrderConfirmation";
-import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
+import AdminAnalytics from "./pages/AdminAnalytics";
+import AdminProducts from "./pages/AdminProducts";
+import Signup from "./pages/Signup";
+import AdminLogin from "./pages/AdminLogin";
+import OrderConfirmation from "./pages/OrderConfirmation";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <FavoritesProvider>
           <CartProvider>
@@ -32,10 +36,13 @@ const App = () => (
                   <Route path="/product/:id" element={<ProductDetail />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/checkout" element={<Checkout />} />
-                  <Route path="/order-confirmation" element={<OrderConfirmation />} />
-                  <Route path="/signup" element={<Signup />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/favorites" element={<Favorites />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/admin-login" element={<AdminLogin />} />
+                  <Route path="/admin" element={<AdminAnalytics />} />
+                  <Route path="/admin/products" element={<AdminProducts />} />
+                  <Route path="/order-confirmation" element={<OrderConfirmation />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
@@ -43,7 +50,8 @@ const App = () => (
           </CartProvider>
         </FavoritesProvider>
       </ThemeProvider>
-  </QueryClientProvider>
-);
+    </QueryClientProvider>
+  );
+};
 
 export default App;

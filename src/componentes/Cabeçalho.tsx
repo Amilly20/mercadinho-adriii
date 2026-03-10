@@ -1,4 +1,4 @@
-import { ShoppingCart, Moon, Sun, User, Heart } from "lucide-react";
+import { ShoppingCart, Moon, Sun, User, Heart, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useCart } from "@/contexts/CartContext";
@@ -15,6 +15,11 @@ const Header = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState("");
   const itemCount = getItemCount();
+
+  const handleLogout = () => {
+    localStorage.removeItem("roleSelected");
+    window.location.href = "/"; // Recarrega a página para mostrar a seleção novamente
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-primary shadow-md border-b border-primary">
@@ -90,6 +95,16 @@ const Header = () => {
                   {itemCount}
                 </span>
               )}
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLogout}
+              className="text-white hover:bg-white/10 ml-1"
+              title="Sair / Trocar Perfil"
+            >
+              <LogOut className="h-5 w-5" />
             </Button>
           </div>
         </div>
