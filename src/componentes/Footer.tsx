@@ -21,11 +21,11 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-5 w-5 flex-shrink-0" />
-                <span className="text-primary-foreground/80">(11) 98765-4321</span>
+                <span className="text-primary-foreground/80">(77) 991995640</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-5 w-5 flex-shrink-0" />
-                <span className="text-primary-foreground/80">contato@adripimentinha.com.br</span>
+                <span className="text-primary-foreground/80">amillynolasco@gmail.com</span>
               </div>
             </div>
           </div>
@@ -45,7 +45,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-primary-foreground/60">
-          <p>&copy; 2024 Mercado Adri Pimentinha. Todos os direitos reservados.</p>
+          <p>&copy; 2026 Mercado Adri Pimentinha. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
