@@ -15,17 +15,19 @@ interface Product {
   name: string;
   price: string;
   unit: string;
+  image?: string;
+  category?: string;
 }
 
 const defaultProducts = [
-  { id: 1, name: "Tomate", price: "R$ 6,99", unit: "kg" },
-  { id: 2, name: "Banana", price: "R$ 4,99", unit: "kg" },
-  { id: 3, name: "Pão Francês", price: "R$ 12,99", unit: "kg" },
-  { id: 4, name: "Leite Integral", price: "R$ 5,49", unit: "L" },
-  { id: 5, name: "Alface", price: "R$ 3,99", unit: "unid" },
-  { id: 6, name: "Queijo Minas", price: "R$ 38,90", unit: "kg" },
-  { id: 7, name: "Maçã", price: "R$ 8,99", unit: "kg" },
-  { id: 8, name: "Iogurte Natural", price: "R$ 4,99", unit: "unid" },
+  { id: 1, name: "Tomate", price: "R$ 6,99", unit: "kg", category: "verduras", image: "/src/Ativos/produtos/tomate.jpg" },
+  { id: 2, name: "Banana", price: "R$ 4,99", unit: "kg", category: "frutas", image: "/src/Ativos/produtos/banana.jpg" },
+  { id: 3, name: "Pão Francês", price: "R$ 12,99", unit: "kg", category: "padaria", image: "/src/Ativos/produtos/pao-frances.jpg" },
+  { id: 4, name: "Leite Integral", price: "R$ 5,49", unit: "L", category: "laticinios", image: "/src/Ativos/produtos/leite.jpg" },
+  { id: 5, name: "Alface", price: "R$ 3,99", unit: "unid", category: "verduras", image: "/src/Ativos/produtos/alface.jpg" },
+  { id: 6, name: "Queijo Minas", price: "R$ 38,90", unit: "kg", category: "laticinios", image: "/src/Ativos/produtos/queijo-minas.jpg" },
+  { id: 7, name: "Maçã", price: "R$ 8,99", unit: "kg", category: "frutas", image: "/src/Ativos/produtos/maca.jpg" },
+  { id: 8, name: "Iogurte Natural", price: "R$ 4,99", unit: "unid", category: "laticinios", image: "/src/Ativos/produtos/iogurte.jpg" },
 ];
 
 const AdminProducts: React.FC = () => {
@@ -67,6 +69,8 @@ const AdminProducts: React.FC = () => {
               name: newProduct.name,
               price: newProduct.price.startsWith("R$") ? newProduct.price : `R$ ${newProduct.price}`,
               unit: newProduct.unit,
+              image: newProduct.image,
+              category: newProduct.category,
             }
           : p
       );
@@ -82,6 +86,8 @@ const AdminProducts: React.FC = () => {
         name: newProduct.name,
         price: newProduct.price.startsWith("R$") ? newProduct.price : `R$ ${newProduct.price}`,
         unit: newProduct.unit,
+        image: newProduct.image,
+        category: newProduct.category,
       };
       updatedProducts = [...products, product];
       toast({
@@ -96,14 +102,14 @@ const AdminProducts: React.FC = () => {
   };
 
   const handleEditProduct = (product: Product) => {
-    setNewProduct({ name: product.name, price: product.price, unit: product.unit });
+    setNewProduct({ name: product.name, price: product.price, unit: product.unit, image: product.image || "", category: product.category || "" });
     setEditingId(product.id);
     // Rolar suavemente até o formulário
     formRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleCancelEdit = () => {
-    setNewProduct({ name: "", price: "", unit: "" });
+    setNewProduct({ name: "", price: "", unit: "", image: "", category: "" });
     setEditingId(null);
   };
 

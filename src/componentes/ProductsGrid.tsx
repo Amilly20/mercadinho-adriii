@@ -6,7 +6,7 @@ import { useFavorites } from "@/contexts/FavoritesContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const products = [
-  { id: 1, name: "Tomate", price: "R$ 6,99", unit: "kg", discount: "15% OFF", category: "verduras", image: "/src/Ativos/produtos/tomate.jpg" },
+  { id: 1, name: "Tomate", price: "R$ 6,99", unit: "kg", discount: "15% OFF", category: "verduras", image: "https://www.yarabrasil.com.br/globalassets/tomate.webp" },
   { id: 2, name: "Banana", price: "R$ 4,99", unit: "kg", discount: null, category: "frutas", image: "/src/Ativos/produtos/banana.jpg" },
   { id: 3, name: "Pão Francês", price: "R$ 12,99", unit: "kg", discount: "10% OFF", category: "padaria", image: "/src/Ativos/produtos/pao-frances.jpg" },
   { id: 4, name: "Leite Integral", price: "R$ 5,49", unit: "L", discount: null, category: "laticinios", image: "/src/Ativos/produtos/leite.jpg" },
