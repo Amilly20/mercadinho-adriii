@@ -17,6 +17,7 @@ interface Product {
   unit: string;
   image?: string;
   category?: string;
+  discount?: string;
 }
 
 const defaultProducts = [
@@ -33,7 +34,7 @@ const defaultProducts = [
 const AdminProducts: React.FC = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
-  const [newProduct, setNewProduct] = useState({ name: "", price: "", unit: "", category: "", image: "" });
+  const [newProduct, setNewProduct] = useState({ name: "", price: "", unit: "", category: "", image: "", discount: "" });
   const [editingId, setEditingId] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const formRef = useRef<HTMLDivElement>(null);
@@ -71,6 +72,7 @@ const AdminProducts: React.FC = () => {
               unit: newProduct.unit,
               image: newProduct.image,
               category: newProduct.category,
+              discount: newProduct.discount,
             }
           : p
       );
@@ -88,6 +90,7 @@ const AdminProducts: React.FC = () => {
         unit: newProduct.unit,
         image: newProduct.image,
         category: newProduct.category,
+        discount: newProduct.discount,
       };
       updatedProducts = [...products, product];
       toast({
@@ -98,18 +101,18 @@ const AdminProducts: React.FC = () => {
 
     setProducts(updatedProducts);
     localStorage.setItem("products", JSON.stringify(updatedProducts));
-    setNewProduct({ name: "", price: "", unit: "", category: "", image: "" });
+    setNewProduct({ name: "", price: "", unit: "", category: "", image: "", discount: "" });
   };
 
   const handleEditProduct = (product: Product) => {
-    setNewProduct({ name: product.name, price: product.price, unit: product.unit, image: product.image || "", category: product.category || "" });
+    setNewProduct({ name: product.name, price: product.price, unit: product.unit, image: product.image || "", category: product.category || "", discount: product.discount || "" });
     setEditingId(product.id);
     // Rolar suavemente até o formulário
     formRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleCancelEdit = () => {
-    setNewProduct({ name: "", price: "", unit: "", image: "", category: "" });
+    setNewProduct({ name: "", price: "", unit: "", image: "", category: "", discount: "" });
     setEditingId(null);
   };
 
@@ -191,6 +194,15 @@ const AdminProducts: React.FC = () => {
                       )}
                     </div>
                   </div>
+
+                    <div>
+                      <label className="text-sm font-medium">Promoção / Desconto</label>
+                      <Input 
+                        value={newProduct.discount} 
+                        onChange={(e) => setNewProduct({...newProduct, discount: e.target.value})}
+                        placeholder="Ex: 15% OFF, Promoção do Dia"
+                      />
+                    </div>
 
                     <div>
                       <label className="text-sm font-medium">Preço</label>

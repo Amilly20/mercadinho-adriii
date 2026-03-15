@@ -9,28 +9,33 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import heroBanner from "@/Ativos/hero-banner.jpg";
+import { useNavigate } from "react-router-dom";
 
 const slides = [
   {
+    title: "🔥 Promoções do Dia!",
+    description: "Confira as melhores ofertas e descontos separados especialmente para você hoje.",
+    buttonText: "Ver Promoções do Dia",
+    link: "/?categoria=ofertas",
+  },
+  {
     title: "Qualidade e Frescor Direto para Você",
-    description: "Ofertas especiais toda semana em produtos selecionados",
-    buttonText: "Ver Ofertas",
+    description: "Produtos selecionados com o maior carinho para a sua família.",
+    buttonText: "Comprar Agora",
+    link: "/",
   },
   {
     title: "Frutas e Verduras Fresquinhas",
-    description: "Colhidos hoje, na sua mesa amanhã",
-    buttonText: "Confira",
-  },
-  {
-    title: "Promoções Imperdíveis",
-    description: "Descontos de até 50% em produtos selecionados",
-    buttonText: "Aproveitar",
+    description: "Colhidos hoje, na sua mesa amanhã.",
+    buttonText: "Ver Hortifruti",
+    link: "/?categoria=hortifruti",
   },
 ];
 
 const HeroCarousel = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!api) return;
@@ -88,6 +93,7 @@ const HeroCarousel = () => {
                         variant="secondary"
                         className="text-lg animate-fade-in hover:scale-105 transition-transform"
                         style={{ animationDelay: "0.2s" }}
+                        onClick={() => navigate(slide.link)}
                       >
                         {slide.buttonText}
                         <ArrowRight className="ml-2 h-5 w-5" />
