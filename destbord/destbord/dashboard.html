@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Mercado - Amill</title>
+    
+    <!-- PWA Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2f7dcb">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -310,6 +315,19 @@
     </div>
 
     <script>
+        // REGISTRO DO SERVICE WORKER (Para o PWA funcionar)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso!');
+                    })
+                    .catch(error => {
+                        console.log('Falha ao registrar o Service Worker:', error);
+                    });
+            });
+        }
+
         // 1. SISTEMA DE NAVEGAÇÃO (TROCA DE TELA)
         function navegar(telaId, elementoMenu) {
             // Esconde todas as telas

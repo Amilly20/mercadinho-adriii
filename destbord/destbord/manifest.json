@@ -1,0 +1,16 @@
+{
+  "name": "Painel do Gerente - Mercado Adri",
+  "short_name": "Gerente App",
+  "description": "Painel de controle de vendas e clientes",
+  "start_url": "./dashboard.html",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#2f7dcb",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3081/3081840.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
