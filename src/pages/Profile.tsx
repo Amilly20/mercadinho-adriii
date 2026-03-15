@@ -68,8 +68,7 @@ const Profile = () => {
     // Limpa a "sessão" (neste caso simples, limpamos a role, mas mantemos os dados do usuário)
     localStorage.removeItem("roleSelected");
     // Opcional: Se quiser limpar os dados do usuário também: localStorage.removeItem("users");
-    navigate("/");
-    window.location.reload();
+    window.location.href = import.meta.env.BASE_URL; // Volta pra Home com recarregamento
   };
 
   return (

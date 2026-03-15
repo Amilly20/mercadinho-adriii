@@ -18,7 +18,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("roleSelected");
-    window.location.href = "/"; // Recarrega a página para mostrar a seleção novamente
+    window.location.href = import.meta.env.BASE_URL; // Recarrega na base correta do site
   };
 
   return (
