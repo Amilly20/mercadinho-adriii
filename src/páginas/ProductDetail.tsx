@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ShoppingCart, Star, Heart } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Star, Heart, ImageOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +22,16 @@ const products = [
   { id: 7, name: "Maçã", price: "R$ 8,99", unit: "kg", description: "Maçãs vermelhas crocantes e doces.", rating: 4.5, reviews: 45 },
   { id: 8, name: "Iogurte Natural", price: "R$ 4,99", unit: "unid", description: "Iogurte natural cremoso, fonte de probióticos.", rating: 4.7, reviews: 78 },
 ];
+const defaultExtraInfo: Record<number, any> = {
+  1: { description: "Tomates frescos e suculentos, ideais para saladas e molhos.", rating: 4.5, reviews: 42 },
+  2: { description: "Bananas maduras e doces, perfeitas para lanches saudáveis.", rating: 4.8, reviews: 58 },
+  3: { description: "Pão francês quentinho, assado diariamente.", rating: 4.7, reviews: 123 },
+  4: { description: "Leite integral fresco, rico em cálcio e vitaminas.", rating: 4.6, reviews: 67 },
+  5: { description: "Alface crocante e fresca, perfeita para saladas.", rating: 4.4, reviews: 34 },
+  6: { description: "Queijo minas artesanal, sabor único e inconfundível.", rating: 4.9, reviews: 91 },
+  7: { description: "Maçãs vermelhas crocantes e doces.", rating: 4.5, reviews: 45 },
+  8: { description: "Iogurte natural cremoso, fonte de probióticos.", rating: 4.7, reviews: 78 },
+};
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -27,6 +39,31 @@ const ProductDetail = () => {
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const product = products.find((p) => p.id === Number(id));
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const storedProducts = localStorage.getItem("products");
+    let allProducts = [];
+    if (storedProducts) {
+      allProducts = JSON.parse(storedProducts);
+    }
+
+    const found = allProducts.find((p: any) => p.id === Number(id));
+    if (found) {
+      const extraInfo = defaultExtraInfo[found.id] || {
+        description: "Produto fresco e de alta qualidade, selecionado especialmente para você.",
+        rating: 4.5,
+        reviews: 15
+      };
+      setProduct({ ...found, ...extraInfo });
+    }
+    setLoading(false);
+  }, [id]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Carregando...</div>;
+  }
 
   if (!product) {
     return (
@@ -64,6 +101,22 @@ const ProductDetail = () => {
                 <Card className="overflow-hidden">
                   <div className="aspect-square bg-gradient-to-br from-secondary to-muted flex items-center justify-center relative">
                     <span className="text-9xl">🛒</span>
+                  <div className="aspect-square bg-gradient-to-br from-secondary to-muted flex items-center justify-center relative overflow-hidden">
+                    {product.image && product.image.trim() !== "" ? (
+                      <img 
+                        src={product.image} 
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                    ) : null}
+                    <div className={`flex flex-col items-center justify-center text-muted-foreground ${product.image ? 'hidden' : ''}`}>
+                      <ImageOff className="h-24 w-24 mb-4 opacity-50" />
+                      <span className="text-lg">Sem imagem</span>
+                    </div>
                     {product.discount && (
                       <Badge className="absolute top-4 right-4 text-lg px-3 py-1">
                         {product.discount}
