@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Mercado - Amill</title>
+    
+    <!-- PWA Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2f7dcb">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* == ESTILO GERAL == */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f0f2f5; display: flex; height: 100vh; }
+
+        /* == SIDEBAR == */
+        .sidebar { width: 250px; background-color: #2f7dcb; color: white; padding: 20px; display: flex; flex-direction: column; }
+        .sidebar h2 { margin-bottom: 40px; text-align: center; color: #ecf0f1; font-size: 1.2rem; }
+        .menu-item { padding: 15px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .menu-item:hover { background-color: #34495e; }
+        .menu-item.active { background-color: #000000; }
+
+        /* == CONTEÚDO == */
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        .header { margin-bottom: 30px; }
+        
+        /* Ocultar telas que não estão ativas */
+        .tela { display: none; animation: fadeIn 0.3s; }
+        .tela.ativa { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* == CARDS DASHBOARD == */
+        .cards-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid #27ae60; }
+        .card h3 { font-size: 14px; color: #7f8c8d; margin-bottom: 10px; }
+        .card p { font-size: 24px; font-weight: bold; color: #2c3e50; }
+        .card.warning { border-left-color: #f39c12; }
+        .card.danger { border-left-color: #c0392b; }
+
+        /* == GRID DE PRODUTOS == */
+        .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .produto-card { background: white; padding: 20px; border-radius: 10px; text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #eee; }
+        .produto-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-color: #27ae60; }
+        .produto-imagem { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 10px; border: 3px solid #f0f2f5; }
+        .produto-nome { font-weight: bold; color: #2c3e50; margin-bottom: 5px; }
+        .produto-preco { color: #27ae60; font-weight: bold; }
+
+        /* == NOVO: GRID DE CLIENTES == */
+        .clientes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .cliente-card { 
+            background: white; padding: 25px; border-radius: 15px; position: relative; overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; display: flex; flex-direction: column; align-items: center;
+        }
+        /* Selo de Nível */
+        .cliente-nivel { 
+            position: absolute; top: 15px; right: 15px; padding: 4px 10px; border-radius: 20px; 
+            font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .nivel-ouro { background: #f1c40f; color: #fff; box-shadow: 0 2px 5px rgba(241, 196, 15, 0.4); }
+        .nivel-prata { background: #bdc3c7; color: #fff; }
+        .nivel-bronze { background: #e67e22; color: #fff; }
+
+        .cliente-foto { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .cliente-info { text-align: center; width: 100%; }
+        .cliente-nome { font-size: 18px; font-weight: bold; color: #2c3e50; margin-bottom: 5px; }
+        .cliente-pontos { font-size: 24px; color: #27ae60; font-weight: 800; margin-bottom: 5px; }
+        .cliente-label { font-size: 12px; color: #95a5a6; text-transform: uppercase; }
+
+        /* Barra de pontos */
+        .pontos-barra-bg { width: 100%; height: 8px; background: #eee; border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .pontos-barra-fill { height: 100%; background: linear-gradient(90deg, #27ae60, #2ecc71); width: 50%; }
+        
+        .btn-resgate { 
+            background: #2c3e50; color: white; border: none; padding: 10px 20px; border-radius: 8px; 
+            cursor: pointer; width: 100%; font-size: 13px; transition: 0.2s; 
+        }
+        .btn-resgate:hover { background: #34495e; transform: scale(1.02); }
+
+        /* == GRÁFICO E TABELA == */
+        .dashboard-row { display: flex; gap: 20px; margin-bottom: 30px; }
+        .col-grafico { flex: 1; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .col-tabela { flex: 2; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: #7f8c8d; font-size: 14px; }
+        .status { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+        .status.entregue { background: #d4edda; color: #155724; }
+        .status.pendente { background: #fff3cd; color: #856404; }
+
+        /* == MODAL == */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; width: 400px; text-align: center; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from {transform: translateY(-50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #aaa; }
+        #modalImagemReal { width: 150px; height: 150px; object-fit: contain; margin-bottom: 15px; border-radius: 10px; }
+        .modal-destaque { font-size: 3rem; margin: 10px 0; color: #2c3e50; font-weight: bold; }
+        .modal-barra { height: 10px; background: #eee; border-radius: 5px; margin: 20px 0; overflow: hidden; }
+        .modal-progresso { height: 100%; background: #27ae60; width: 0%; transition: width 1s ease; }
+
+        /* == RESPONSIVIDADE (MOBILE) == */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            
+            /* Transforma a sidebar em uma barra inferior estilo app */
+            .sidebar { 
+                width: 100%; height: 70px; flex-direction: row; justify-content: space-around; align-items: center;
+                padding: 5px; position: fixed; bottom: 0; left: 0; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            }
+            .sidebar h2 { display: none; }
+            .menu-item { flex-direction: column; font-size: 14px; padding: 8px; border-radius: 8px; text-align: center; gap: 5px; flex: 1; justify-content: center; }
+            .menu-item span { display: none; } /* Esconde o selo "Novo" por falta de espaço */
+            
+            /* Ajuste de espaçamentos para não ficar escondido atrás da barra */
+            .main-content { padding: 15px; padding-bottom: 90px; }
+            .header h1 { font-size: 24px; }
+            
+            .cards-container { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .dashboard-row { flex-direction: column; }
+            .col-grafico { height: 300px; }
+            .col-tabela { overflow-x: auto; } /* Permite arrastar a tabela no touch */
+            
+            .modal-content { width: 90%; padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .cards-container { grid-template-columns: 1fr; } /* 1 card por linha em telas muito pequenas */
+            .produtos-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .produto-card { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h2> Mercado Adri Pimentinha</h2>
+        <div class="menu-item active" onclick="navegar('dashboard', this)"> Dashboard</div>
+        <div class="menu-item" onclick="navegar('dashboard', this)"> Produtos</div> <div class="menu-item" onclick="navegar('clientes', this)"> Clientes <span style="font-size:10px; background:#e74c3c; padding:2px 6px; border-radius:10px; margin-left:auto;">Novo</span></div>
+        <div class="menu-item"> Relatórios</div>
+    </aside>
+
+    <main class="main-content">
+        
+        <section id="tela-dashboard" class="tela ativa">
+            <div class="header">
+                <h1>Visão Geral do Estoque</h1>
+                <p>Clique em um produto para ver detalhes de vendas.</p>
+            </div>
+
+            <div class="cards-container">
+                <div class="card"><h3>VENDAS HOJE</h3><p>R$ 1.250,00</p></div>
+                <div class="card warning"><h3>PEDIDOS ABERTOS</h3><p>12</p></div>
+                <div class="card danger"><h3>ESTOQUE BAIXO</h3><p>Café, Leite</p></div>
+                <div class="card"><h3>CLIENTES NOVOS</h3><p>4</p></div>
+            </div>
+
+            <h3 style="margin-bottom: 15px; color:#2c3e50;"> Produtos em Destaque</h3>
+            <div class="produtos-grid">
+                <div class="produto-card" onclick="abrirModal('cafe')">
+                    <img src="https://destro.fbitsstatic.net/img/p/cafe-pilao-500g-tradicional-almofada-70397/256933.jpg?w=500&h=500&v=202501231555&qs=ignore" class="produto-imagem" alt="Café">
+                    <div class="produto-nome">Café Pilão</div>
+                    <div class="produto-preco">R$ 18,90</div>
+                </div>
+                
+                <div class="produto-card" onclick="abrirModal('arroz')">
+                    <img src="https://josapar.vteximg.com.br/arquivos/ids/158000-1000-1000/20134_2--1-.png?v=638860286204170000" class="produto-imagem" alt="Arroz">
+                    <div class="produto-nome">Arroz Tio João</div>
+                    <div class="produto-preco">R$ 24,50</div>
+                </div>
+
+                <div class="produto-card" onclick="abrirModal('feijao')">
+                    <img src="https://mercantilatacado.vtexassets.com/arquivos/ids/169749/654a30fb75d9096810e2bf64.jpg?v=638349578276430000" class="produto-imagem" alt="Feijão">
+                    <div class="produto-nome">Feijão Carioca</div>
+                    <div class="produto-preco">R$ 8,90</div>
+                </div>
+
+                <div class="produto-card" onclick="abrirModal('oleo')">
+                    <img src="https://http2.mlstatic.com/D_917941-MLA99429361160_112025-C.jpg" class="produto-imagem" alt="Óleo">
+                    <div class="produto-nome">Óleo de Soja</div>
+                    <div class="produto-preco">R$ 6,50</div>
+                </div>
+            </div>
+
+            <div class="dashboard-row">
+                <div class="col-grafico">
+                    <h3 style="margin-bottom: 15px; color:#2c3e50;">Mais Vendidos (%)</h3>
+                    <div style="width: 100%; height: 100%; display: flex; justify-content: center;">
+                        <canvas id="graficoPizza"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-tabela">
+                    <h3 style="margin-bottom: 15px; color:#2c3e50;">Últimas Saídas</h3>
+                    <table>
+                        <thead><tr><th>Produto</th><th>Qtd</th><th>Hora</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>Café Pilão</td><td>2 un</td><td>10:30</td><td><span class="status entregue">Pago</span></td></tr>
+                            <tr><td>Arroz 5kg</td><td>1 un</td><td>10:15</td><td><span class="status pendente">Aguardando</span></td></tr>
+                            <tr><td>Feijão 1kg</td><td>3 un</td><td>09:45</td><td><span class="status entregue">Pago</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="tela-clientes" class="tela">
+            <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Clube Fidelidade</h1>
+                    <p>Gerencie pontos e descontos dos seus melhores clientes.</p>
+                </div>
+                <button style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">+ Novo Cliente</button>
+            </div>
+
+            <div class="clientes-grid">
+                <div class="cliente-card">
+                    <span class="cliente-nivel nivel-ouro"> Ouro</span>
+                    <img src="https://w7.pngwing.com/pngs/339/876/png-transparent-login-computer-icons-password-login-black-symbol-subscription-business-model-thumbnail.png" class="cliente-foto">
+                    <div class="cliente-info">
+                        <div class="cliente-nome">Maria Silva</div>
+                        <span class="cliente-label">Saldo de Pontos</span>
+                        <div class="cliente-pontos">1.250</div>
+                        
+                        <div style="font-size: 12px; color: #7f8c8d; text-align: left; margin-top: 10px;">
+                            Próximo Desconto (R$ 50,00)
+                        </div>
+                        <div class="pontos-barra-bg">
+                            <div class="pontos-barra-fill" style="width: 80%;"></div>
+                        </div>
+                        <button class="btn-resgate">Resgatar Pontos</button>
+                    </div>
+                </div>
+
+                <div class="cliente-card">
+                    <span class="cliente-nivel nivel-prata"> Prata</span>
+                    <img src="https://w7.pngwing.com/pngs/339/876/png-transparent-login-computer-icons-password-login-black-symbol-subscription-business-model-thumbnail.png" class="cliente-foto">
+                    <div class="cliente-info">
+                        <div class="cliente-nome">Carlos Mendes</div>
+                        <span class="cliente-label">Saldo de Pontos</span>
+                        <div class="cliente-pontos">840</div>
+                        
+                        <div style="font-size: 12px; color: #7f8c8d; text-align: left; margin-top: 10px;">
+                            Próximo Desconto (R$ 20,00)
+                        </div>
+                        <div class="pontos-barra-bg">
+                            <div class="pontos-barra-fill" style="width: 45%;"></div>
+                        </div>
+                        <button class="btn-resgate">Resgatar Pontos</button>
+                    </div>
+                </div>
+
+                <div class="cliente-card">
+                    <span class="cliente-nivel nivel-bronze"> Bronze</span>
+                    <img src="https://w7.pngwing.com/pngs/339/876/png-transparent-login-computer-icons-password-login-black-symbol-subscription-business-model-thumbnail.png" class="cliente-foto">
+                    <div class="cliente-info">
+                        <div class="cliente-nome">Luana Rikelmo</div>
+                        <span class="cliente-label">Saldo de Pontos</span>
+                        <div class="cliente-pontos">120</div>
+                        
+                        <div style="font-size: 12px; color: #7f8c8d; text-align: left; margin-top: 10px;">
+                            Próximo Desconto (R$ 10,00)
+                        </div>
+                        <div class="pontos-barra-bg">
+                            <div class="pontos-barra-fill" style="width: 10%;"></div>
+                        </div>
+                        <button class="btn-resgate" style="background-color: #bdc3c7; cursor: not-allowed;">Sem Saldo</button>
+                    </div>
+                </div>
+
+                 <div class="cliente-card">
+                    <span class="cliente-nivel nivel-prata"> Prata</span>
+                    <img src="https://w7.pngwing.com/pngs/339/876/png-transparent-login-computer-icons-password-login-black-symbol-subscription-business-model-thumbnail.png" class="cliente-foto">
+                    <div class="cliente-info">
+                        <div class="cliente-nome">Roberto Dias</div>
+                        <span class="cliente-label">Saldo de Pontos</span>
+                        <div class="cliente-pontos">600</div>
+                        
+                        <div style="font-size: 12px; color: #7f8c8d; text-align: left; margin-top: 10px;">
+                            Próximo Desconto (R$ 20,00)
+                        </div>
+                        <div class="pontos-barra-bg">
+                            <div class="pontos-barra-fill" style="width: 60%;"></div>
+                        </div>
+                        <button class="btn-resgate">Resgatar Pontos</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="modalProduto" class="modal-overlay" onclick="fecharModal(event)">
+        <div class="modal-content">
+            <span class="close-btn" onclick="fecharModalBtn()">×</span>
+            <img src="" id="modalImagemReal" alt="Produto">
+            <h2 id="modalTitulo" style="color: #2c3e50;">Nome</h2>
+            <p id="modalPreco" style="color: #7f8c8d; margin-bottom: 20px;">R$ 0,00</p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            <div class="dados-venda">
+                <p style="color:#aaa; font-size:12px;">VENDAS HOJE</p>
+                <div class="modal-destaque" id="modalVendas">0 un</div>
+                <p style="color:#aaa; font-size:12px;">ESTOQUE</p>
+                <p style="font-weight: bold; color: #27ae60;" id="modalEstoque">0 unidades</p>
+            </div>
+            <div style="text-align: left; margin-top: 20px;">
+                <span style="font-size: 12px; color: #aaa;">Meta diária</span>
+                <div class="modal-barra">
+                    <div id="modalBarra" class="modal-progresso"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // REGISTRO DO SERVICE WORKER (Para o PWA funcionar)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso!');
+                    })
+                    .catch(error => {
+                        console.log('Falha ao registrar o Service Worker:', error);
+                    });
+            });
+        }
+
+        // 1. SISTEMA DE NAVEGAÇÃO (TROCA DE TELA)
+        function navegar(telaId, elementoMenu) {
+            // Esconde todas as telas
+            document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+            
+            // Mostra a tela escolhida
+            document.getElementById('tela-' + telaId).classList.add('ativa');
+
+            // Atualiza o menu lateral (fica verde)
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            elementoMenu.classList.add('active');
+        }
+
+        // --- CÓDIGO ANTIGO DOS PRODUTOS (MANTIDO IGUAL) ---
+        const dadosProdutos = {
+            'cafe': { nome: 'Café Pilão 500g', preco: 'R$ 18,90', img: 'https://destro.fbitsstatic.net/img/p/cafe-pilao-500g-tradicional-almofada-70397/256933.jpg?w=500&h=500&v=202501231555&qs=ignore', vendas: 42, estoque: 15, meta: '80%' },
+            'arroz': { nome: 'Arroz Tio João 5kg', preco: 'R$ 24,50', img: 'https://josapar.vteximg.com.br/arquivos/ids/158000-1000-1000/20134_2--1-.png?v=638860286204170000', vendas: 28, estoque: 50, meta: '45%' },
+            'feijao': { nome: 'Feijão Carioca 1kg', preco: 'R$ 8,90', img: 'https://mercantilatacado.vtexassets.com/arquivos/ids/169749/654a30fb75d9096810e2bf64.jpg?v=638349578276430000', vendas: 65, estoque: 10, meta: '90%' },
+            'oleo': { nome: 'Óleo de Soja 900ml', preco: 'R$ 6,50', img: 'https://http2.mlstatic.com/D_917941-MLA99429361160_112025-C.jpg', vendas: 12, estoque: 80, meta: '20%' }
+        };
+
+        function abrirModal(produtoKey) {
+            const produto = dadosProdutos[produtoKey];
+            const modal = document.getElementById('modalProduto');
+            document.getElementById('modalTitulo').innerText = produto.nome;
+            document.getElementById('modalPreco').innerText = produto.preco;
+            document.getElementById('modalVendas').innerText = produto.vendas + " un";
+            document.getElementById('modalEstoque').innerText = produto.estoque + " unidades";
+            document.getElementById('modalImagemReal').src = produto.img;
+            const barra = document.getElementById('modalBarra');
+            barra.style.width = '0%';
+            setTimeout(() => barra.style.width = produto.meta, 100);
+            modal.style.display = 'flex';
+        }
+
+        function fecharModalBtn() { document.getElementById('modalProduto').style.display = 'none'; }
+        function fecharModal(event) { if (event.target === document.getElementById('modalProduto')) fecharModalBtn(); }
+
+        const ctx = document.getElementById('graficoPizza').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Café', 'Arroz', 'Feijão', 'Óleo'],
+                datasets: [{
+                    data: [42, 28, 65, 12],
+                    backgroundColor: ['#6f4e37', '#ecf0f1', '#8e44ad', '#f1c40f'],
+                    borderWidth: 0
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+    </script>
+</body>
+</html>
