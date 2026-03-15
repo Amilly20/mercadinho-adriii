@@ -38,6 +38,16 @@ All colors MUST be HSL.
     /* Anel de foco ao clicar no vermelho */
     --ring: 349 89% 52%;
     --radius: 0.75rem;
+
+    /* Cores do Menu Lateral (Categorias) */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 349 89% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 15 100% 95%;
+    --sidebar-accent-foreground: 349 89% 20%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 349 89% 52%;
   }
 
   .dark {
@@ -65,5 +75,15 @@ All colors MUST be HSL.
     --border: 0 0% 20%;
     --input: 0 0% 20%;
     --ring: 349 89% 60%;
+
+    /* Cores do Menu Lateral (Categorias) no Escuro */
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 95%; /* <-- Isso vai deixar as letras brancas! */
+    --sidebar-primary: 349 89% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 349 30% 15%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 349 89% 60%;
   }
 }
