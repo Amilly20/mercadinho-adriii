@@ -28,8 +28,8 @@ const Header = () => {
           <SidebarTrigger className="md:mr-2" />
 
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-            <div className="h-10 w-10 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
-              <span className="text-white font-bold text-lg">AP</span>
+            <div className="h-10 w-10 rounded-full bg-white overflow-hidden flex items-center justify-center border-2 border-white/30 shadow-sm">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyAPqza9WGtVPVqVWlk-f7Wg8fm2MF9UgAmw&s" alt="Logo Mercadinho" className="h-full w-full object-cover" />
             </div>
             <div className="hidden sm:block">
               <h1 className="text-xl font-bold text-white">Mercado Adri Pimentinha</h1>
