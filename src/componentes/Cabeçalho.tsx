@@ -33,6 +33,7 @@ const Header = () => {
             </div>
             <div className="hidden sm:block">
               <h1 className="text-xl font-bold text-white">Mercado Adri Pimentinha</h1>
+              <p className="text-[11px] text-white/90 italic font-medium leading-none mt-1">"To juntinha juntona misturada com adri pimenta pimentinha pimentão"</p>
             </div>
           </div>
 

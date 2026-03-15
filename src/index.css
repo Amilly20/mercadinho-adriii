@@ -50,7 +50,7 @@ All colors MUST be HSL.
     
     /* Vermelho Pimenta mais vibrante para dar contraste no escuro */
     --primary: 349 89% 60%;
-    --primary-foreground: 0 0% 10%;
+    --primary-foreground: 0 0% 100%;
     
     --secondary: 349 30% 15%;
     --secondary-foreground: 0 0% 95%;

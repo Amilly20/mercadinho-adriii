@@ -7,6 +7,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-xl font-bold mb-4">Mercado Adri Pimentinha</h3>
+            <p className="text-primary-foreground/90 mb-4 italic font-medium">
+              "To juntinha juntona misturada com adri pimenta pimentinha pimentão"
+            </p>
             <p className="text-primary-foreground/80 mb-4">
               Qualidade e frescor há mais de 10 anos servindo sua família.
             </p>
