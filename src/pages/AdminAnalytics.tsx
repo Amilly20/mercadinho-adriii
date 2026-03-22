@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DollarSign, ShoppingBag, Users, TrendingUp, ArrowLeft, ArrowDown, ArrowUp } from "lucide-react";
+import { DollarSign, ShoppingBag, Users, TrendingUp, ArrowLeft, ArrowDown, ArrowUp, Database } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, Legend, LineChart, Line } from "recharts";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -95,9 +95,15 @@ const AdminAnalytics: React.FC = () => {
                 </Button>
                 <h1 className="text-3xl font-bold">Dashboard Completo</h1>
               </div>
-              <Button onClick={() => navigate("/admin/products")}>
-                Gerenciar Produtos
-              </Button>
+              <div className="flex gap-3">
+                <Button variant="secondary" onClick={() => navigate("/admin/data")} className="gap-2">
+                  <Database className="h-4 w-4" />
+                  Ver Banco de Dados
+                </Button>
+                <Button onClick={() => navigate("/admin/products")}>
+                  Gerenciar Produtos
+                </Button>
+              </div>
             </div>
             
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">

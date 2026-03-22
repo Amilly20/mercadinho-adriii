@@ -18,6 +18,9 @@ import AdminProducts from "./pages/AdminProducts";
 import Signup from "./pages/Signup";
 import AdminLogin from "./pages/AdminLogin";
 import OrderConfirmation from "./pages/OrderConfirmation";
+import AdminData from "./pages/AdminData";
+import SellerLogin from "./pages/SellerLogin";
+import SellerPOS from "./pages/SellerPOS";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +45,9 @@ const App = () => {
                   <Route path="/admin-login" element={<AdminLogin />} />
                   <Route path="/admin" element={<AdminAnalytics />} />
                   <Route path="/admin/products" element={<AdminProducts />} />
+                  <Route path="/admin/data" element={<AdminData />} />
+                  <Route path="/seller-login" element={<SellerLogin />} />
+                  <Route path="/seller/pos" element={<SellerPOS />} />
                   <Route path="/order-confirmation" element={<OrderConfirmation />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

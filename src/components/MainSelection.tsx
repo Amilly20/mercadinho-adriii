@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { UserCog, ShoppingBag } from "lucide-react";
+import { UserCog, ShoppingBag, Store } from "lucide-react";
 
 const MainSelection: React.FC = () => {
   const navigate = useNavigate();
@@ -24,6 +24,10 @@ const MainSelection: React.FC = () => {
     navigate("/admin-login");
   };
 
+  const handleSeller = () => {
+    navigate("/seller-login");
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -38,7 +42,7 @@ const MainSelection: React.FC = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full">
           <Button 
             variant="outline" 
             className="h-48 flex flex-col items-center justify-center gap-4 border-2 hover:border-primary hover:bg-primary/5 transition-all text-lg"
@@ -48,6 +52,17 @@ const MainSelection: React.FC = () => {
               <ShoppingBag className="h-12 w-12 text-primary" />
             </div>
             Sou Cliente
+          </Button>
+
+          <Button 
+            variant="outline" 
+            className="h-48 flex flex-col items-center justify-center gap-4 border-2 hover:border-primary hover:bg-primary/5 transition-all text-lg"
+            onClick={handleSeller}
+          >
+            <div className="p-4 rounded-full bg-secondary">
+              <Store className="h-12 w-12 text-primary" />
+            </div>
+            Sou Vendedor (Caixa)
           </Button>
 
           <Button 
